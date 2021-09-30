@@ -12,8 +12,6 @@ public class RTSCamera : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(Input.mousePosition.x);
-
         Vector3 moveVector = new Vector3(0, 0, 0);
 
         // Hovering Left
