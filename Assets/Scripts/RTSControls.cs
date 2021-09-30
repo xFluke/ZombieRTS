@@ -45,9 +45,12 @@ public class RTSControls : MonoBehaviour
             selectedZombies.Clear();
 
             foreach (Collider2D collider2D in collider2Ds) {
+                if(collider2D.GetType() == typeof(CircleCollider2D))
+                    continue;
+
                 Zombie zombie = collider2D.GetComponent<Zombie>();
 
-                if (zombie != null && !selectedZombies.Contains(zombie)) {
+                if (zombie != null) {
                     zombie.EnableSelectedIndicator(true);
                     selectedZombies.Add(zombie);
                 }

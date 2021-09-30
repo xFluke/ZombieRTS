@@ -68,12 +68,12 @@ public class Zombie : MonoBehaviour
 
         destinationIndicator = Instantiate(destinationIndicatorPrefab, destination, Quaternion.identity);
 
-        if ((TargetPosition.x - transform.position.x) < 0) {
-            transform.eulerAngles = new Vector2(0, 180);
-        }
-        else {
-            transform.eulerAngles = new Vector2(0, 0);
-        }
+        //if ((TargetPosition.x - transform.position.x) < 0) {
+        //    transform.eulerAngles = new Vector2(0, 180);
+        //}
+        //else {
+        //    transform.eulerAngles = new Vector2(0, 0);
+        //}
 
         GetComponent<Pathfinding.AIDestinationSetter>().target = destinationIndicator.transform;
         IsMoving = true; 

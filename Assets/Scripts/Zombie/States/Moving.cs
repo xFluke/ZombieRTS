@@ -28,5 +28,12 @@ public class Moving : IState
         else {
             animator.SetBool("isMoving", true);
         }
+
+        float desiredVelocityX = zombie.GetComponent<Pathfinding.AIPath>().desiredVelocity.x;
+
+        if (desiredVelocityX >= 0.01f)
+            zombie.transform.localScale = new Vector3(1f, 1f, 1f);
+        else if (desiredVelocityX <= -0.01f)
+            zombie.transform.localScale = new Vector3(-1f, 1f, 1f);
     }
 }
