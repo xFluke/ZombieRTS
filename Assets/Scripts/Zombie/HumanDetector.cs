@@ -9,14 +9,14 @@ public class HumanDetector : MonoBehaviour
     private Transform detectedHuman;
 
     private void OnTriggerEnter2D(Collider2D collision) {
-        if (collision.gameObject.CompareTag("Human")) {
+        if (collision.GetComponent<Human>()) {
             detectedHuman = collision.transform;
             Debug.Log(detectedHuman.name);
         }
     }
 
     private void OnTriggerExit2D(Collider2D collision) {
-        if (collision.gameObject.CompareTag("Human")) {
+        if (collision.GetComponent<Human>()) {
             detectedHuman = null;
         }
     }
@@ -24,4 +24,5 @@ public class HumanDetector : MonoBehaviour
     public Transform GetNearestHumanTransform() {
         return detectedHuman.transform;
     }
+
 }

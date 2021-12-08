@@ -18,6 +18,7 @@ public class Zombie : MonoBehaviour
     StateMachine stateMachine;
     
     public bool IsMoving { get; set; }
+    public bool IsInfecting { get; set; }
     public Vector3 TargetPosition { get; set; }
 
     private void Awake() {
@@ -29,17 +30,24 @@ public class Zombie : MonoBehaviour
         var idle = new Idle(this);
         var moving = new Moving(this, animator);
         var chasing = new Chasing(this, humanDetector);
+        var infecting = new Infecting(this, humanDetector);
 
         At(idle, moving, ReceivedMovementInput());
         At(moving, idle, ReachedDestination());
+        At(infecting, idle, FinishedInfecting());
 
         stateMachine.AddAnyTransition(chasing, () => humanDetector.HumanInRange);
+        At(chasing, infecting, ReachedInfectionRange());
+        At(chasing, idle, HumanNoLongerInRange());
 
         stateMachine.SetState(idle);
 
         void At(IState to, IState from, Func<bool> condition) => stateMachine.AddTransition(to, from, condition);
         Func<bool> ReceivedMovementInput() => () => IsMoving;
         Func<bool> ReachedDestination() => () => !IsMoving;
+        Func<bool> ReachedInfectionRange() => () => IsInfecting;
+        Func<bool> FinishedInfecting() => () => !IsInfecting;
+        Func<bool> HumanNoLongerInRange() => () => !humanDetector.HumanInRange;
     }
 
     // Start is called before the first frame update
@@ -68,15 +76,28 @@ public class Zombie : MonoBehaviour
 
         destinationIndicator = Instantiate(destinationIndicatorPrefab, destination, Quaternion.identity);
 
-        //if ((TargetPosition.x - transform.position.x) < 0) {
-        //    transform.eulerAngles = new Vector2(0, 180);
-        //}
-        //else {
-        //    transform.eulerAngles = new Vector2(0, 0);
-        //}
-
         GetComponent<Pathfinding.AIDestinationSetter>().target = destinationIndicator.transform;
         IsMoving = true; 
 
+    }
+
+    public void Infect(Human human) {
+        IsInfecting = true;
+
+        StartCoroutine(StartInfection(human));
+    }
+
+    IEnumerator StartInfection(Human human) {
+        Vector3 targetPosition = human.transform.position;
+
+        Destroy(human.gameObject);
+        GameObject ps = Instantiate(Resources.Load("InfectionParticles") as GameObject, targetPosition, Quaternion.identity);
+
+        yield return new WaitForSeconds(2);
+
+        Instantiate(Resources.Load("Zombie") as GameObject, targetPosition, Quaternion.identity);
+        Destroy(ps);
+
+        IsInfecting = false;
     }
 }
