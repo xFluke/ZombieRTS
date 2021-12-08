@@ -17,7 +17,7 @@ public class Moving : IState
     }
 
     public void OnExit() {
-       
+        zombie.IsMoving = false;
     }
 
     public void Tick() {

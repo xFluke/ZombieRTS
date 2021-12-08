@@ -22,6 +22,10 @@ public class Chasing : IState
     }
 
     public void Tick() {
+        //Debug.Log(Vector3.Distance(zombie.transform.position, humanDetector.GetNearestHumanTransform().position));
 
+        if (Vector3.Distance(zombie.transform.position, humanDetector.GetNearestHumanTransform().position) <= 0.25f) {
+            zombie.Infect(humanDetector.GetNearestHumanTransform().GetComponent<Human>());
+        }
     }
 }
